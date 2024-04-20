@@ -26,12 +26,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDropzone } from "react-dropzone";
 import { FilePlusIcon } from "@radix-ui/react-icons";
 import axios from "axios";
-import { useUser } from "@clerk/nextjs";
-import { getTemplateFilePublicUrl } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
 import { toast } from "./ui/use-toast";
 
-const TemplateModalSchema = z.object({
+const FilUploadModalSchema = z.object({
   templateName: z.string().min(2, {
     message: "Template name must be at least 2 characters.",
   }),
@@ -44,8 +41,7 @@ interface Props {
   disabled: boolean;
 }
 
-export const TemplateModal: FC<Props> = ({ disabled = false }) => {
-  const { user } = useUser();
+export const FilUploadModal: FC<Props> = ({ disabled = false }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -55,8 +51,8 @@ export const TemplateModal: FC<Props> = ({ disabled = false }) => {
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
     useDropzone({ onDrop });
 
-  const form = useForm<z.infer<typeof TemplateModalSchema>>({
-    resolver: zodResolver(TemplateModalSchema),
+  const form = useForm<z.infer<typeof FilUploadModalSchema>>({
+    resolver: zodResolver(FilUploadModalSchema),
     defaultValues: {
       templateName: "",
       templateDescription: "",
@@ -72,32 +68,12 @@ export const TemplateModal: FC<Props> = ({ disabled = false }) => {
     </li>
   ));
 
-  async function onSubmit(data: z.infer<typeof TemplateModalSchema>) {
-        });
-
-      if (error) {
-        console.error(error);
-        toast({
-          title: "Failed to upload template... ",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const templateUrl = await getTemplateFilePublicUrl(storageData.path!);
-
-      // store template in db
-      const response = await axios.post("/api/template", {
-        attorneyEmail: user?.primaryEmailAddress?.emailAddress || "",
-        templateName: data.templateName || "",
-        templateUrl: templateUrl?.publicUrl || "",
-        templateDescription: data.templateDescription || "",
-      });
-
+  async function onSubmit(data: z.infer<typeof FilUploadModalSchema>) {
+    try {
       setLoadingSubmit(false);
       setOpen(false);
       toast({
-        title: "Successfully uploaded template! ",
+        title: "Successfully uploaded file! ",
       });
     } catch (err: unknown) {
       console.error(err);
@@ -117,7 +93,7 @@ export const TemplateModal: FC<Props> = ({ disabled = false }) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Upload Template</DialogTitle>
+          <DialogTitle>Upload File</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -127,7 +103,7 @@ export const TemplateModal: FC<Props> = ({ disabled = false }) => {
               render={({ field }) => (
                 <FormItem className="my-6">
                   <FormLabel htmlFor="templateName" className="text-right">
-                    Template Name
+                    File Name
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -150,7 +126,7 @@ export const TemplateModal: FC<Props> = ({ disabled = false }) => {
                     htmlFor="templateDescription"
                     className="text-right"
                   >
-                    Template Description
+                    File Description
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -203,4 +179,4 @@ export const TemplateModal: FC<Props> = ({ disabled = false }) => {
   );
 };
 
-export default TemplateModal;
+export default FilUploadModal;
