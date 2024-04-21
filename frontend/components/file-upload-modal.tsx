@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useState, FC } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -37,11 +39,9 @@ const FilUploadModalSchema = z.object({
   }),
 });
 
-interface Props {
-  disabled: boolean;
-}
+interface Props {}
 
-export const FilUploadModal: FC<Props> = ({ disabled = false }) => {
+export const FilUploadModal: FC<Props> = () => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -87,9 +87,7 @@ export const FilUploadModal: FC<Props> = ({ disabled = false }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-6" disabled={disabled}>
-          Upload Template
-        </Button>
+        <Button className="mt-6">Upload Template</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
@@ -160,7 +158,7 @@ export const FilUploadModal: FC<Props> = ({ disabled = false }) => {
                   "Drag and drop files or click to upload"}
               </p>
             </div>
-            <DialogFooter className="flex sm:flex-row sm:justify-center">
+            <DialogFooter className="flex flex-col sm:flex-row sm:justify-center">
               <Button
                 type="submit"
                 disabled={
