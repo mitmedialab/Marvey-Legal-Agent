@@ -30,7 +30,7 @@ import { FilePlusIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { toast } from "./ui/use-toast";
 
-const FilUploadModalSchema = z.object({
+const FileUploadModalSchema = z.object({
   templateName: z.string().min(2, {
     message: "Template name must be at least 2 characters.",
   }),
@@ -41,7 +41,7 @@ const FilUploadModalSchema = z.object({
 
 interface Props {}
 
-export const FilUploadModal: FC<Props> = () => {
+export const FileUploadModal: FC<Props> = () => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -51,8 +51,8 @@ export const FilUploadModal: FC<Props> = () => {
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
     useDropzone({ onDrop });
 
-  const form = useForm<z.infer<typeof FilUploadModalSchema>>({
-    resolver: zodResolver(FilUploadModalSchema),
+  const form = useForm<z.infer<typeof FileUploadModalSchema>>({
+    resolver: zodResolver(FileUploadModalSchema),
     defaultValues: {
       templateName: "",
       templateDescription: "",
@@ -68,10 +68,11 @@ export const FilUploadModal: FC<Props> = () => {
     </li>
   ));
 
-  async function onSubmit(data: z.infer<typeof FilUploadModalSchema>) {
+  async function onSubmit(data: z.infer<typeof FileUploadModalSchema>) {
     try {
       setLoadingSubmit(false);
       setOpen(false);
+      // TODO: upload file
       toast({
         title: "Successfully uploaded file! ",
       });
@@ -177,4 +178,4 @@ export const FilUploadModal: FC<Props> = () => {
   );
 };
 
-export default FilUploadModal;
+export default FileUploadModal;
